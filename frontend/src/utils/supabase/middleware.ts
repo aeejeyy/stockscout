@@ -1,7 +1,19 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { IS_DEMO_MODE } from '@/lib/demo/mode'
 
 export async function updateSession(request: NextRequest) {
+  // Demo mode: everyone is signed in as the demo user, so skip the login pages.
+  if (IS_DEMO_MODE) {
+    if (request.nextUrl.pathname.startsWith('/auth')) {
+      const url = request.nextUrl.clone()
+      url.pathname = '/'
+      url.search = ''
+      return NextResponse.redirect(url)
+    }
+    return NextResponse.next()
+  }
+
   const requestHeaders = new Headers(request.headers)
   if (request.nextUrl.pathname.startsWith('/api/')) {
     requestHeaders.set('X-API-Key', process.env.FASTAPI_SECRET || "dev_shared_secret_key")
