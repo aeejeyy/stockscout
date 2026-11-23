@@ -5,8 +5,12 @@ import { createDemoClient } from '@/lib/demo/supabase'
 export function createClient() {
   // Demo mode: no Supabase project configured, use built-in sample data.
   if (IS_DEMO_MODE) {
-    return createDemoClient()
+    return createDemoClient() as unknown as ReturnType<typeof createRealClient>
   }
+  return createRealClient()
+}
+
+function createRealClient() {
   return createBrowserClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
