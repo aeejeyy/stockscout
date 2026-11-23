@@ -1,8 +1,15 @@
 import { createServerClient, type CookieOptions } from '@supabase/ssr'
 import { cookies } from 'next/headers'
+import { IS_DEMO_MODE } from '@/lib/demo/mode'
+import { createDemoClient } from '@/lib/demo/supabase'
 
 export async function createClient() {
   const cookieStore = await cookies()
+
+  // Demo mode: no Supabase project configured, use built-in sample data.
+  if (IS_DEMO_MODE) {
+    return createDemoClient()
+  }
 
   return createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
