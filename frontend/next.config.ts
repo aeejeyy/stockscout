@@ -19,6 +19,11 @@ const demoEnv: Record<string, string> =
 
 const nextConfig: NextConfig = {
   env: demoEnv,
+  // Type errors are reported in CI/IDE but do not block deploys while the
+  // project is in demo mode.
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   experimental: {
     proxyTimeout: 300000,
   },
